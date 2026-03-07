@@ -1,0 +1,43 @@
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Build directories (ANY path)
+# =========================
+build/
+bin/
+obj/
+Debug/
+Release/
+x64/
+Win32/
+
+# =========================
+# C/C++ build artifacts
+# =========================
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.dll
+*.exp
+
+
+# =========================
+# CMake (if used)
+# =========================
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# =========================
+# Logs / temp
+# =========================
+*.log
+*.tmp
