@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "raylib.h"
 #include "../PlayerEntity.h"
+#include "math.h"
 
 PlayScene& PlayScene::instance()
 {
@@ -20,9 +21,12 @@ void PlayScene::load()
     playerDef.pos = { 0,0 };
     playerDef.radius = 1.0f;
     playerDef.isDynamic = true;
+    playerDef.enableCollisions = true;
     playerDef.name = "Player";
     playerDef.tag = "Player";
-    playerDef.enableCollisions = true;
+
+	//player == physics.makeCircle(playerDef);
+	//addEntity(player);
 
 
     auto circle = physics.makeCircle(playerDef);
@@ -30,16 +34,15 @@ void PlayScene::load()
     player = std::make_shared<PlayerEntity>(
         playerDef.name,
         playerDef.tag,
-        circle->body,
+        circle->body,   // usar el mismo body
         playerDef.radius,
         true
     );
 
-    // MUY IMPORTANTE
+    // conectar Box2D con el PlayerEntity
     b2Body_SetUserData(circle->body, player.get());
 
     addEntity(player);
-
 
     // ===== JUNK =====
     junkDef.radius = 0.6f;
@@ -145,14 +148,21 @@ void PlayScene::draw()
 
 void PlayScene::handlePlayerMovement()
 {
+    if (!player) return;
+    if (!b2Body_IsValid(player->body)) return;
+
     Vector2 vel = { 0,0 };
 
-    if (IsKeyDown(KEY_W)) vel.y = -6;
-    if (IsKeyDown(KEY_S)) vel.y = 6;
-    if (IsKeyDown(KEY_A)) vel.x = -6;
-    if (IsKeyDown(KEY_D)) vel.x = 6;
+    float speed = 20.0f;
 
-    b2Body_SetLinearVelocity(player->body, { vel.x, vel.y });
+    if (IsKeyDown(KEY_W)) vel.y -= speed;
+    if (IsKeyDown(KEY_S)) vel.y += speed;
+    if (IsKeyDown(KEY_A)) vel.x -= speed;
+    if (IsKeyDown(KEY_D)) vel.x += speed;
+
+    b2Vec2 velocity = { vel.x, vel.y };
+
+    b2Body_SetLinearVelocity(player->body, velocity);
 }
 
 void PlayScene::spawnJunk()

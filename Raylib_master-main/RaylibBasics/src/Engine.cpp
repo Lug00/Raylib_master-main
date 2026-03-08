@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 #include "raylib.h"
 #include "Log.h"
+#include "MenuScene.h"
 
 Engine::Engine() {
 	Log::print("Engine creado");
@@ -11,11 +12,14 @@ Engine::Engine() {
 void Engine::intialize() {
 	// Initialization code here
 	setlocale(LC_ALL, ""); // Configurar idiom
+	
 	InitWindow(800, 450, "Raylib Basics Engine");
 	InitAudioDevice();
 	SetTargetFPS(120);
+
 	Log::print("Se inicializo engine");
-	sceneManager.changeScene(&PlayScene::instance());
+
+	sceneManager.changeScene(&MenuScene::instance());
 }
 
 void Engine::run() {

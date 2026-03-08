@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "GUI.h"
 #include "EventManager.h"
+#include "../PlayerEntity.h"
 
 class PlayScene : public Scene
 {
@@ -14,14 +15,13 @@ public:
     void draw() override;
 
     EventManager eventManager;
-
 	GUI gui;
 
 private:
     PlayScene() {} // Singleton
 
     // ===== ENTIDADES =====
-    std::shared_ptr<PCircle> player;
+    std::shared_ptr<PlayerEntity> player;
 
     // ===== DEFINICIONES FÍSICAS =====
     BodyData playerDef;

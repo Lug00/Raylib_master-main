@@ -49,8 +49,8 @@ public:
 	void drawScene() {
         BeginMode2D(cam);
         for (auto& e : entities) e->draw();
-        draw();
 		EndMode2D();
+        draw();
        
     }
 

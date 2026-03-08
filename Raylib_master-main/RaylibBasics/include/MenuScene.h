@@ -16,6 +16,8 @@ public:
 	
     static MenuScene& instance();
     
+    Rectangle startButton = { 500,500,200,60 };
+    std::vector<Vector2> stars;
 
     void load() override;
     void unload() override;
@@ -25,9 +27,8 @@ public:
 
 
 private:
-   // MenuScene();
-   // GUI gui;
-	//std::shared_ptr<Texture2D> tex;
-	//std::shared_ptr<Music> bgMusic;
-   // std::shared_ptr<Font> font;
+   GUI gui;
+   std::shared_ptr<Texture2D> tex;
+   std::shared_ptr<Music> bgMusic;
+   std::shared_ptr<Font> font;
 };
