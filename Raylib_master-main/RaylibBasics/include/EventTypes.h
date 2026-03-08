@@ -11,3 +11,17 @@ struct CollisionEvent {
     Entity* b;
     float force;
 };
+
+struct AddScoreEvent
+{
+    int value = 1;
+};
+
+struct GameOverEvent
+{
+};
+
+struct DamageEvent
+{
+    int value = 1;
+};

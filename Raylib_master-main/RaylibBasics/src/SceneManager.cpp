@@ -2,8 +2,22 @@
 
 SceneManager& SceneManager::instance()
 {
-    static SceneManager instance;
-    return instance;
+    static SceneManager sm;
+    return sm;
+}
+
+void SceneManager::changeScene(Scene* newScene)
+{
+    if (currentScene)
+    {
+        currentScene->unload();
+        currentScene->clear();
+    }
+
+    currentScene = newScene;
+
+    if (currentScene)
+        currentScene->load();
 }
 
 void SceneManager::update()
@@ -16,15 +30,4 @@ void SceneManager::draw()
 {
     if (currentScene)
         currentScene->drawScene();
-}
-
-void SceneManager::changeScene(Scene* newScene)
-{
-    if (currentScene)
-        currentScene->unload();
-
-    currentScene = newScene;
-
-    if (currentScene)
-        currentScene->load();
 }

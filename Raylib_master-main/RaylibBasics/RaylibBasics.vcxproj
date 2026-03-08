@@ -144,6 +144,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsteroidEntity.cpp" />
+    <ClCompile Include="EventTypes.cpp" />
+    <ClCompile Include="JunkEntity.cpp" />
+    <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="src\MenuScene.cpp" />
     <ClCompile Include="src\Engine.cpp" />
@@ -166,6 +170,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsteroidEntity.h" />
     <ClInclude Include="include\Bodies.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Entity.h" />
@@ -180,6 +185,8 @@
     <ClInclude Include="include\ResourceManager.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\SceneManager.h" />
+    <ClInclude Include="JunkEntity.h" />
+    <ClInclude Include="PlayerEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="extras\EngineDiagram.cd" />

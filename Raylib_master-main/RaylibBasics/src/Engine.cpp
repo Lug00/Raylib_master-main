@@ -13,7 +13,7 @@ void Engine::intialize() {
 	setlocale(LC_ALL, ""); // Configurar idiom
 	InitWindow(800, 450, "Raylib Basics Engine");
 	InitAudioDevice();
-	SetTargetFPS(60);
+	SetTargetFPS(120);
 	Log::print("Se inicializo engine");
 	sceneManager.changeScene(&PlayScene::instance());
 }
@@ -34,7 +34,7 @@ void Engine::draw() {
 
 	BeginDrawing();
 
-	ClearBackground(RAYWHITE);
+	ClearBackground(BLACK);
 
 	DrawFPS(30, 10);
 	sceneManager.draw();

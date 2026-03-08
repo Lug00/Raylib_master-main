@@ -62,7 +62,7 @@ public:
     // Paso de simulación físico
     void update(float dt) {
      
-            b2World_Step(world, dt, 12);
+            b2World_Step(world, timeStep, 12);
 
 			processCollisions();
     }
@@ -104,8 +104,10 @@ public:
 	}
 
     std::shared_ptr<PCircle> makeCircle(const BodyData& data) {
-        return makeCircle(data.name, data.tag, data.pos, data.radius, data.isDynamic);
+        // ahora delegamos a la nueva firma que acepta enableCollisions
+        return makeCircle(data.name, data.tag, data.pos, data.radius, data.isDynamic, data.enableCollisions);
     }
+
 
     // Fábrica para Cajas (PBox)
     std::shared_ptr<PBox> makeBox(std::string name, std::string tag, Vector2 pos, Vector2 size, bool isDynamic, bool enableCollisions) {
@@ -126,33 +128,38 @@ public:
         b2CreatePolygonShape(bodyId, &shapeDef, &box);
         auto boxEntity = std::make_shared<PBox>(name, tag, bodyId, size, isDynamic);
 
-        // 4. ¡VITAL! Vincular la instancia recién creada con el cuerpo de Box2D
-        // Usamos boxEntity.get() para obtener el puntero crudo (Entity*)
+		boxEntity->tag = tag; // Aseguramos que el tag se asigne correctamente
+
         b2Body_SetUserData(bodyId, boxEntity.get());
         return boxEntity;
     }
 
     // Fábrica para Círculos (PCircle)
-    std::shared_ptr<PCircle> makeCircle(std::string name, std::string tag, Vector2 pos, float radius, bool isDynamic) {
-        // 1. Definir y crear el cuerpo
+    // Firma ampliada para permitir controlar enableCollisions
+    std::shared_ptr<PCircle> makeCircle(
+        std::string name,
+        std::string tag,
+        Vector2 pos,
+        float radius,
+        bool isDynamic,
+        bool enableCollisions)
+    {
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = isDynamic ? b2_dynamicBody : b2_staticBody;
         bodyDef.position = { pos.x, pos.y };
-        
-        b2BodyId bodyId = b2CreateBody(world, &bodyDef);
-     
-        // 2. Definir y crear la forma circular
-        b2ShapeDef shapeDef = b2DefaultShapeDef();
-        shapeDef.material.friction = 2.0f;
-        //shapeDef.density = 0.01f;
 
-        shapeDef.enableContactEvents = true; // Habilitamos eventos de contacto para esta forma
+        b2BodyId bodyId = b2CreateBody(world, &bodyDef);
+
+        b2ShapeDef shapeDef = b2DefaultShapeDef();
+        shapeDef.enableContactEvents = enableCollisions;
+
         b2Circle circle = { {0.0f, 0.0f}, radius };
         b2CreateCircleShape(bodyId, &shapeDef, &circle);
 
         auto circleEntity = std::make_shared<PCircle>(name, tag, bodyId, radius, isDynamic);
 
-        // 4. VINCULAR: Ahora que tenemos el objeto, le damos el puntero a Box2D
+        circleEntity->tag = tag;
+
         b2Body_SetUserData(bodyId, circleEntity.get());
 
         return circleEntity;

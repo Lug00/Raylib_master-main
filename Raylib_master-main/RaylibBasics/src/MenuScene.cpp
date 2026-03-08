@@ -2,13 +2,6 @@
 #include "PlayScene.h"
 #include "SceneManager.h"
 #include "raylib.h"
-#include "raygui.h"
-#include "Log.h"
-
-MenuScene::MenuScene()
-{
-   
-}
 
 MenuScene& MenuScene::instance()
 {
@@ -16,49 +9,41 @@ MenuScene& MenuScene::instance()
     return instance;
 }
 
-void MenuScene::load()
-{
-	
-	if (isLoaded) {
-		PlayMusicStream(*bgMusic);
-		return;
-	}
-	isLoaded = true;
-	tex = resourceManager.getTexture("apple.png");
-	bgMusic = resourceManager.getMusic("menu.ogg");
-	PlayMusicStream(*bgMusic);
-	font = resourceManager.getFont("Roboto-Regular.ttf");
-
-	
-}
-
-void MenuScene::unload()
-{
-	if(isLoaded)
-		StopMusicStream(*bgMusic);
-}
+void MenuScene::load() {}
+void MenuScene::unload() {}
 
 void MenuScene::update()
 {
-	UpdateMusicStream(*bgMusic);
-    if (IsKeyPressed(KEY_SPACE)) {
-        SceneManager::instance().changeScene(&PlayScene::instance());
-	}
-
+    //Vector2 mouse = GetMousePosition();
+    //
+    //Rectangle startBtn = { 400,350,200,60 };
+    //
+    //if (CheckCollisionPointRec(mouse, startBtn) &&
+    //    IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    //{
+    //    SceneManager::instance().changeScene(&PlayScene::instance());
+    //}
 }
 
 void MenuScene::draw()
 {
-    DrawText("Menu Scene!", 190, 200, 20, LIGHTGRAY);
-	Rectangle buttonRect = { 200, 100, 200, 100 };
-    if (GuiButton(buttonRect, "#191#Show Message")) {
-		Log::print("Button Clicked in MenuScene");
-		eventManager.emit(ClickButtonEvent{ "Show button"});
+    DrawText("SPACE JUNK COLLECTOR", 350, 120, 50, WHITE);
+
+    DrawText("RECOLECTA LA BASURA", 420, 250, 30, GREEN);
+    DrawText("EVITA LA BASURA TOXICA", 390, 290, 30, RED);
+
+    DrawText("WASD PARA MOVERTE", 430, 340, 20, GRAY);
+
+    Rectangle startButton = { 540, 420, 200, 60 };
+
+    DrawRectangleRec(startButton, DARKGREEN);
+    DrawText("INICIAR", 600, 440, 25, WHITE);
+
+    Vector2 mouse = GetMousePosition();
+
+    if (CheckCollisionPointRec(mouse, startButton) &&
+        IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        SceneManager::instance().changeScene(&PlayScene::instance());
     }
-
-	DrawTexture(*tex, 300, 250, WHITE);
-	DrawTextEx(*font, "Menú Principal", { 10,10 }, 32, 2, DARKBLUE);
-	gui.draw();
 }
-
-

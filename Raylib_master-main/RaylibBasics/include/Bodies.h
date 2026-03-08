@@ -8,19 +8,16 @@
 class PBox : public PhysicsEntity {
 public:
     Vector2 size;
-	int hitPts = 0; // Contador de impactos 
+    int hitPts = 0;
 
     PBox(std::string n, std::string t, b2BodyId id, Vector2 s, bool d)
-        : PhysicsEntity(n, t, id, d), size(s) {
-    }
+        : PhysicsEntity(n, t, id, d), size(s) {}
 
     void draw() override {
         Vector2 h = { size.x / 2.0f, size.y / 2.0f };
 
-        // Dibujo del rectángulo rotado
         DrawRectanglePro({ pos.x, pos.y, size.x, size.y }, h, angle, Fade(color, 0.8f));
 
-        // Líneas de contorno usando los puntos del mundo de Box2D
         b2Vec2 v1 = b2Body_GetWorldPoint(body, { -h.x, -h.y });
         b2Vec2 v2 = b2Body_GetWorldPoint(body, { h.x, -h.y });
         b2Vec2 v3 = b2Body_GetWorldPoint(body, { h.x,  h.y });
@@ -34,24 +31,10 @@ public:
 
     void onCollisionEnter(const Collision& collision) override
     {
-        Log::print("Colision");
-        if(collision.self->tag == "Box") {
-            if (collision.other->tag == "Bird") {
-                if (collision.force > 0.5f) {
-
-                    hit();
-                }
-            }
-        }
-    }
-
-    void hit() {
-		hitPts++;
-        if (hitPts >= 3) {
-            destroy();
-        }
+        TraceLog(LOG_INFO, "PBox colision con %s", collision.other->tag.c_str());
     }
 };
+
 
 
 class PCircle : public PhysicsEntity {

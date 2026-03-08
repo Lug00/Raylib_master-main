@@ -10,6 +10,8 @@
 
 class MenuScene : public Scene
 {
+private:
+    MenuScene() {}
 public:
 	
     static MenuScene& instance();
@@ -17,14 +19,15 @@ public:
 
     void load() override;
     void unload() override;
+
     void update() override;
     void draw() override;
 
 
 private:
-    MenuScene();
-    GUI gui;
-	std::shared_ptr<Texture2D> tex;
-	std::shared_ptr<Music> bgMusic;
-    std::shared_ptr<Font> font;
+   // MenuScene();
+   // GUI gui;
+	//std::shared_ptr<Texture2D> tex;
+	//std::shared_ptr<Music> bgMusic;
+   // std::shared_ptr<Font> font;
 };

@@ -1,7 +1,7 @@
 #pragma once
-#pragma once
 #include "Scene.h"
-
+#include "GUI.h"
+#include "EventManager.h"
 
 class PlayScene : public Scene
 {
@@ -13,34 +13,35 @@ public:
     void update() override;
     void draw() override;
 
+    EventManager eventManager;
+
+	GUI gui;
+
 private:
-    PlayScene() {} // private constructor for singleton
-    BodyData birdDef;
-    BodyData boxDef;
-	BodyData floorDef;
-	BodyData wallDef;
-    std::shared_ptr<PCircle> bird; // Puntero para acceder al pájaro fácilmente
-   
-    // Configuración de la Resortera
-    Vector2 anchor;
-    float maxPull;
-    float forceMult;
-    bool isDragging;
-    Vector2 birdStarPos;
+    PlayScene() {} // Singleton
 
-	bool isLaunch = false; 
+    // ===== ENTIDADES =====
+    std::shared_ptr<PCircle> player;
 
-    const float MAX_X = 250.0f; // Límite absoluto donde la cámara se detiene
+    // ===== DEFINICIONES FÍSICAS =====
+    BodyData playerDef;
+    BodyData junkDef;
+    BodyData asteroidDef;
+    BodyData wallDef;
 
-    float followSpeed = 6.0f;
-    float deadZoneX = 8.0f;   // en unidades mundo
-    float deadZoneY = 4.0f;
-    float maxTravelDistance = 40.0f; // 3 pantallas
-    float cameraStartX = 0.0f;
-    bool cameraInitialized = false;
-    float camSpeed = 20.0f; // world units per second
+    // ===== SPAWN SYSTEM =====
+    float spawnTimer = 0.0f;
+    float spawnRate = 2.0f;
 
-    Vector2 getClampedMousePos(Vector2 mousePos);
-	void updateCamera();
+    // ===== GAME STATE =====
+    int score = 0;
+	int lives = 3;
+    bool gameOver = false;
+    //eventManager.subscribe<DamageEvent>(this, &PlayScene::onDamage);
 
+    // ===== FUNCIONES INTERNAS =====
+    void spawnJunk();
+    void spawnAsteroid();
+    void handlePlayerMovement();
+    void onGameOver(const GameOverEvent& e);
 };
