@@ -25,23 +25,8 @@ void PlayScene::load()
     playerDef.name = "Player";
     playerDef.tag = "Player";
 
-	//player == physics.makeCircle(playerDef);
-	//addEntity(player);
 
-
-    auto circle = physics.makeCircle(playerDef);
-
-    player = std::make_shared<PlayerEntity>(
-        playerDef.name,
-        playerDef.tag,
-        circle->body,   // usar el mismo body
-        playerDef.radius,
-        true
-    );
-
-    // conectar Box2D con el PlayerEntity
-    b2Body_SetUserData(circle->body, player.get());
-
+    player = physics.makePlayer(playerDef);
     addEntity(player);
 
     // ===== JUNK =====

@@ -4,6 +4,7 @@
 #include "EventManager.h"
 #include "EventTypes.h"
 #include <string>
+#include "../PlayerEntity.h"
 
 
 struct BodyData {
@@ -165,5 +166,30 @@ public:
         return circleEntity;
     }
 
+    std::shared_ptr<PlayerEntity> makePlayer(const BodyData& data)
+    {
+        b2BodyDef bodyDef = b2DefaultBodyDef();
+        bodyDef.type = data.isDynamic ? b2_dynamicBody : b2_staticBody;
+        bodyDef.position = { data.pos.x, data.pos.y };
 
+        b2BodyId bodyId = b2CreateBody(world, &bodyDef);
+
+        b2ShapeDef shapeDef = b2DefaultShapeDef();
+        shapeDef.enableContactEvents = true;
+
+        b2Circle circle = { {0.0f, 0.0f}, data.radius };
+        b2CreateCircleShape(bodyId, &shapeDef, &circle);
+
+        auto player = std::make_shared<PlayerEntity>(
+            data.name,
+            data.tag,
+            bodyId,
+            data.radius,
+            data.isDynamic
+        );
+
+        b2Body_SetUserData(bodyId, player.get());
+
+        return player;
+    }
 };
