@@ -168,18 +168,21 @@ public:
 
     std::shared_ptr<PlayerEntity> makePlayer(const BodyData& data)
     {
+        // Crear body
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = data.isDynamic ? b2_dynamicBody : b2_staticBody;
         bodyDef.position = { data.pos.x, data.pos.y };
 
         b2BodyId bodyId = b2CreateBody(world, &bodyDef);
 
+        // Shape
         b2ShapeDef shapeDef = b2DefaultShapeDef();
-        shapeDef.enableContactEvents = true;
+        shapeDef.enableContactEvents = data.enableCollisions;
 
         b2Circle circle = { {0.0f, 0.0f}, data.radius };
         b2CreateCircleShape(bodyId, &shapeDef, &circle);
 
+        // Crear PlayerEntity REAL
         auto player = std::make_shared<PlayerEntity>(
             data.name,
             data.tag,
@@ -188,6 +191,7 @@ public:
             data.isDynamic
         );
 
+        // conectar correctamente
         b2Body_SetUserData(bodyId, player.get());
 
         return player;

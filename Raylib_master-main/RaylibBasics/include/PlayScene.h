@@ -3,6 +3,8 @@
 #include "GUI.h"
 #include "EventManager.h"
 #include "../PlayerEntity.h"
+#include "nlohmann/json.hpp"
+#include <fstream>
 
 class PlayScene : public Scene
 {
@@ -14,7 +16,11 @@ public:
     void update() override;
     void draw() override;
 
-    EventManager eventManager;
+    void saveHighScore();
+    void loadHighScore();
+
+    int highScore = 0;
+
 	GUI gui;
 
 private:

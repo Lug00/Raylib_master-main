@@ -4,6 +4,8 @@
 #define RAYMATH_IMPLEMENTATION
 #include "raymath.h" 
 #include "PhysicsEntity.h"
+#include "EventManager.h"
+#include "EventTypes.h"
 
 class PBox : public PhysicsEntity {
 public:
@@ -31,7 +33,12 @@ public:
 
     void onCollisionEnter(const Collision& collision) override
     {
-        TraceLog(LOG_INFO, "PBox colision con %s", collision.other->tag.c_str());
+        if (tag == "Asteroid" && collision.other->tag == "Player")
+        {
+            DamageEvent e;
+            e.value = 1; // quitar 1 vida
+            EventManager::instance().emit(e);
+        }
     }
 };
 

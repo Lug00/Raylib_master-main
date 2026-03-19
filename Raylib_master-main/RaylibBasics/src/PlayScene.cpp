@@ -3,6 +3,11 @@
 #include "raylib.h"
 #include "../PlayerEntity.h"
 #include "math.h"
+#include "PhysicsEntity.h"
+#include "nlohmann/json.hpp"
+#include <fstream>
+
+using json = nlohmann::json;
 
 PlayScene& PlayScene::instance()
 {
@@ -12,10 +17,20 @@ PlayScene& PlayScene::instance()
 
 void PlayScene::load()
 {
-    if (isLoaded) return;
+    loadHighScore();
 
+    entities.clear();
     physics.reset();
     eventManager.subscribe<GameOverEvent>(this, &PlayScene::onGameOver);
+
+    std::ifstream file("assets/save.json");
+
+    if (file.is_open())
+    {
+        json j;
+        file >> j;
+        highScore = j.value("highscore", 0);
+    }
 
     // ===== PLAYER =====
     playerDef.pos = { 0,0 };
@@ -25,9 +40,12 @@ void PlayScene::load()
     playerDef.name = "Player";
     playerDef.tag = "Player";
 
-
     player = physics.makePlayer(playerDef);
     addEntity(player);
+
+    b2Body_SetAwake(player->body, true);
+    b2Body_ApplyMassFromShapes(player->body);
+
 
     // ===== JUNK =====
     junkDef.radius = 0.6f;
@@ -76,6 +94,8 @@ void PlayScene::load()
 
 void PlayScene::unload()
 {
+    clear();
+    isLoaded = false;
 }
 
 void PlayScene::update()
@@ -103,11 +123,13 @@ void PlayScene::update()
 
 void PlayScene::draw()
 {
-    // Dibujos en coordenadas de pantalla (UI / texto / overlays).
-    // Las entidades ya fueron dibujadas por Scene::drawScene() dentro de la cámara.
+    
     gui.draw();
 
     DrawText(TextFormat("Score: %i", score), 20, 20, 30, WHITE);
+
+    DrawText(TextFormat("Score: %i", score), 20, 20, 30, WHITE);
+    DrawText(TextFormat("HighScore: %i", highScore), 1000, 60, 30, YELLOW);
 
 
     if (gameOver)
@@ -174,16 +196,48 @@ void PlayScene::spawnAsteroid()
 
 void PlayScene::onGameOver(const GameOverEvent& e)
 {
+    saveHighScore(); 
     gameOver = true;
+
+    if (score > highScore)
+    {
+        highScore = score;
+
+        json j;
+        j["highscore"] = highScore;
+
+        std::ofstream file("assets/save.json");
+        file << j.dump(4);
+    }
 }
 
-//void PlayScene::onDamage(const DamageEvent& e)
-//{
-//    lives--;
-//
-//    if (lives <= 0)
-//    {
-//        GameOverEvent e;
-//        EventManager::instance().emit(e);
-//    }
-//}
+void PlayScene::saveHighScore()
+{
+    if (score > highScore)
+        highScore = score;
+
+    nlohmann::json j;
+    j["highscore"] = highScore;
+
+    std::ofstream file("assets/json/save.json");
+    if (file.is_open())
+    {
+        file << j.dump(4);
+        file.close();
+    }
+}
+
+void PlayScene::loadHighScore()
+{
+    std::ifstream file("assets/json/save.json");
+
+    if (file.is_open())
+    {
+        nlohmann::json j;
+        file >> j;
+
+        highScore = j.value("highscore", 0);
+
+        file.close();
+    }
+}
